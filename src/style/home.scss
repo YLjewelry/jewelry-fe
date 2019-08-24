@@ -1,0 +1,59 @@
+$dark-color: #0e0f22;
+$light-color: #799fd3;
+$large-font:22px;
+$medium-font: 18px;
+$normal-font: 16px;
+$small-font: 14px;
+
+.admin-aside{
+    // background: #333;
+}
+
+.home{
+    height: 100%;
+
+    background: linear-gradient(to bottom left, $dark-color, $light-color);
+
+    .el-container{
+        height: 100%;
+        min-height: 800px;
+
+        .el-main{
+            background-color: #fff;
+        }
+    }
+}
+
+
+.left-menu{
+    color:#fff;
+    user-select: none;
+}
+
+.menu-title{
+    height: 60px;
+    line-height: 60px;
+    font-size: $large-font;
+}
+
+.menu-item{
+    transition: background-color .2s ease-in;
+    cursor: pointer;
+    height: 48px;
+    line-height: 48px;
+    font-size: $normal-font;
+    text-align: left;
+    padding: 0 20px;
+
+    .menu-item__text{
+        padding-left: 16px;
+    }
+    
+    &:hover{
+        background-color: $light-color;
+    }
+}
+
+.menu-item--active{
+    background-color: $light-color;
+}
