@@ -8,7 +8,7 @@
                 ></left-menu>
             </el-aside>
             <el-container>
-                <el-header>Header</el-header>
+                <el-header></el-header>
                 <el-main>
                     <series-main v-if="activePanel===1"></series-main>
                     <jobs-main v-if="activePanel===2"></jobs-main>

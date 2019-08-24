@@ -26,6 +26,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import httpService from '@/common/request';
 
 @Component
 export default class Home extends Vue {
@@ -44,24 +45,22 @@ export default class Home extends Vue {
     public login() {
         (this.$refs.loginFormRef as any).validate((valid: boolean) => {
             if (valid) {
-                this.$http
-                    .post("http://www.yilanjewelry.com/login/", {
-                        name: this.loginForm.username,
-                        password: this.loginForm.password
-                    })
-                    .then((res: any) => {
-                        if (res.data == 9998) {
-                            this.$message.error("用户未激活！");
-                        } else if (res.data == 9999) {
-                            this.$message.error("用户名或密码错误！");
-                        } else {
-                            this.$message.success("登录成功");
-                            this.$router.push("/home");
-                        }
-                    })
-                    .catch((err: any) => {
-                        this.$message.error("登录失败！");
-                    });
+                httpService.login({
+                    name: this.loginForm.username,
+                    password: this.loginForm.password
+                }).then((res: any) => {
+                    if (res.data == 9998) {
+                        this.$message.error("用户未激活！");
+                    } else if (res.data == 9999) {
+                        this.$message.error("用户名或密码错误！");
+                    } else {
+                        this.$message.success("登录成功");
+                        this.$router.push("/home");
+                    }
+                })
+                .catch((err: any) => {
+                    this.$message.error("登录失败！");
+                });
             } else {
                 return false;
             }
