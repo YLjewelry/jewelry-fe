@@ -2,11 +2,16 @@
     <div class="series-wrap">
         <div class="series-bar">
             <el-button type="primary" @click="newSeries">添加系列</el-button>
-            <el-button @click="startSort">排序</el-button>
+            <el-button v-if="!isSorting" @click="startSort">排序</el-button>
+            <el-button v-if="isSorting" @click="endSort">确认排序</el-button>
         </div>
         <div class="series-table">
             <el-table :data="series" style="width: 100%">
                 <el-table-column prop="index" label="序号" width="100">
+                    <template slot-scope="scope">
+                        <span v-if="!isSorting">{{scope.row.index}}</span>
+                        <el-input v-if="isSorting" v-model="scope.row.index"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="seriesname" label="名称" width="180">
                 </el-table-column>
@@ -71,50 +76,76 @@
                 >
             </div>
         </el-dialog>
-        <!-- <el-dialog title="编辑系列" :visible.sync="editVisible">
-            <el-form :model="edit">
-                <el-form-item label="活动名称" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+        <el-dialog title="编辑系列" :visible.sync="editVisible">
+            <el-form :model="seriesDetail">
+                <el-form-item label="图片：" :label-width="formLabelWidth">
+                    <el-upload
+                        class="upload-demo"
+                        drag
+                        :action="picUploadUrl"
+                        multiple>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                    </el-upload>
                 </el-form-item>
-                <el-form-item label="活动区域" :label-width="formLabelWidth">
-                    <el-select
-                        v-model="form.region"
-                        placeholder="请选择活动区域"
-                    >
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
+                <el-form-item label="最大限高: " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.maxHeight"></el-input>
                 </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false"
-                    >确 定</el-button
-                >
-            </div>
-        </el-dialog> -->
-        <!-- <el-dialog title="添加系列" :visible.sync="dialogFormVisible">
-            <el-form :model="form">
-                <el-form-item label="活动名称" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                <el-form-item label="名称: " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.name"></el-input>
                 </el-form-item>
-                <el-form-item label="活动区域" :label-width="formLabelWidth">
-                    <el-select
-                        v-model="form.region"
-                        placeholder="请选择活动区域"
-                    >
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
+                <el-form-item label="简介: " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.seriesintro"></el-input>
+                </el-form-item>
+                <el-form-item label="名称(英文): " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.seriesname_eng"></el-input>
+                </el-form-item>
+                <el-form-item label="简介(英文): " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.seriesintro_eng"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false"
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="confirmEdit"
                     >确 定</el-button
                 >
             </div>
-        </el-dialog> -->
+        </el-dialog>
+        <el-dialog title="添加系列" :visible.sync="newVisible">
+            <el-form :model="newForm">
+                <el-form-item label="图片：" :label-width="formLabelWidth">
+                    <el-upload
+                        class="upload-demo"
+                        drag
+                        :action="picUploadUrl"
+                        multiple>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item label="最大限高: " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.maxHeight"></el-input>
+                </el-form-item>
+                <el-form-item label="名称: " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="简介: " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.seriesintro"></el-input>
+                </el-form-item>
+                <el-form-item label="名称(英文): " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.seriesname_eng"></el-input>
+                </el-form-item>
+                <el-form-item label="简介(英文): " :label-width="formLabelWidth">
+                    <el-input v-model="newForm.seriesintro_eng"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="confirmNew"
+                    >确 定</el-button
+                >
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -124,6 +155,7 @@ import httpService from "@/common/request";
 interface ISeries {
     id: number;
     seriesname: string;
+    index?: number;
     seriespic: string;
 }
 interface ISeriesDetail {
@@ -131,6 +163,7 @@ interface ISeriesDetail {
     seriesintro_eng: string;
     seriesname: string;
     seriesname_eng: string;
+    maxHeight?: string;
 }
 
 @Component
@@ -138,13 +171,27 @@ export default class SeriesMain extends Vue {
     public series: ISeries[] = [];
     public srcList: string[] = [];
     public seriesDetail: ISeriesDetail = {
+        maxHeight: '',
         seriesintro: '',
         seriesintro_eng: '',
         seriesname: '',
         seriesname_eng: ''
     }
     public formLabelWidth = '120px';
-    detailVisible = false;
+    public detailVisible = false;
+    public newVisible = false;
+    public editVisible = false;
+    public newForm:ISeriesDetail = {
+        maxHeight:'',
+        seriesintro: '',
+        seriesintro_eng: '',
+        seriesname: '',
+        seriesname_eng: ''
+    }
+
+    public isSorting = false;
+
+    public readonly picUploadUrl = '';
 
     public async getSeries() {
         const { data } = await httpService.getSeries();
@@ -166,8 +213,10 @@ export default class SeriesMain extends Vue {
         this.seriesDetail = data;
         this.detailVisible = true;
     }
-    public showEditDialog(series: ISeries) {
-        //
+    public async showEditDialog(series: ISeries) {
+        const { data } = await httpService.getOneSeries(series.id);
+        this.seriesDetail = data;
+        this.editVisible = true;
     }
     public confirmDel(series: ISeries) {
         this.$confirm('确认删除该系列吗？', '提示', {
@@ -185,14 +234,29 @@ export default class SeriesMain extends Vue {
         });
     }
     public newSeries() {
-        //
+        this.newVisible = true;
     }
     public startSort() {
-        //
+        this.isSorting = true;
+    }
+    public endSort(){
+        this.isSorting = false;
+        const sort:any = {}
+        this.series.forEach((series)=>{
+            sort.id = series.index;
+        })
+        httpService.sortSeries(sort);
     }
 
     public created() {
         this.getSeries();
+    }
+
+    public async confirmEdit() {
+        await httpService.editSeries(this.seriesDetail);
+    }
+    public async confirmNew() {
+        await httpService.addNewSeries(this.newForm);
     }
 }
 </script>

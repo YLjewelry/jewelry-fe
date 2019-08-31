@@ -32,6 +32,11 @@ export default {
         return axios.post(`http://www.yilanjewelry.com/fixIndex/`);
     },
 
+
+    editSeries(params: any) {
+        return axios.post(`http://www.yilanjewelry.com/addSeries/`);
+    },
+
     addNewSeries(params: any) {
         return axios.post(`http://www.yilanjewelry.com/addSeries/`);
     },
